@@ -8,8 +8,28 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(uuid())
-  name     String
-  email    String @unique
-  password String
+  id        String    @id @default(uuid())
+  name      String
+  email     String    @unique
+  phone     String
+  password  String
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @map("updated_at")
+
+  restaurants Restaurant[]
+
+  @@map("users")
+}
+
+model Restaurant {
+  id              String   @id @default(uuid())
+  ownerId         String
+  name            String
+  restaurantPhone String?
+  description     String?
+  address         String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
 }

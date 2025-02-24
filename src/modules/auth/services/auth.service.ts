@@ -3,7 +3,7 @@ import { AuthDto } from "../dtos/auth.dto";
 import { UserService } from "src/modules/users/services/users.service";
 import { JwtService } from "@nestjs/jwt";
 import * as brcrypt from 'bcryptjs'
-import { EnvService } from "src/env/env.service";
+import { EnvService } from "src/shared/env/env.service";
 
 
 @Injectable()

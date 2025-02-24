@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
-import { PrismaService } from "src/shared/prisma/prisma.service";
 import { CreateUserSchema } from "../dtos/create-user.dto";
 import { UpdatedUserSchema } from "../dtos/updated-user.dto";
+import { PrismaService } from "../../../shared/prisma/prisma.service";
 
 @Injectable()
 export class UsersRepository {
@@ -12,6 +12,7 @@ export class UsersRepository {
         data: {
             name: data.name,
             email: data.email,
+            phone: data.phone,
             password: data.password,
         }
        })
@@ -28,7 +29,10 @@ export class UsersRepository {
     async updated (id: string, data: UpdatedUserSchema) {
         return this.prisma.user.update({
             where: { id },
-            data,
+            data: {
+                ...data,
+                updatedAt: new Date()
+            },
         })
     }
 

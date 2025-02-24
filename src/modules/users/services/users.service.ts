@@ -20,6 +20,7 @@ export class UserService {
     async updated(id: string, data: UpdatedUserSchema) {
         const user = await this.usersRepository.updated(id, data)
         if (!user) throw new NotFoundException("Usuario não encontrado.")
+        
         return user
     }
 
