@@ -1,6 +1,6 @@
 import {Test, TestingModule} from '@nestjs/testing'
-import { RestaurantRepository } from "../repositories/restaurant.respository"
-import { RestaurantService } from "./restaurant.service"
+import { RestaurantService } from './restaurant.service'
+import { RestaurantRepository } from '../repositories/restaurant.respository'
 
 describe('RestaurantService', ()=>{
     let service: RestaurantService

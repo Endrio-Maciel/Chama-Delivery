@@ -19,7 +19,7 @@ describe('RestaurantsController (e2e)', ()=> {
             .post('/auth/login') 
             .send({
             email: "admin@email.com",
-            phone: '51 99999-9999',
+            password: '123456',
             });
 
           if(existingUser.status !== 201) {
@@ -36,11 +36,8 @@ describe('RestaurantsController (e2e)', ()=> {
           const loginResponse = await request(app.getHttpServer())
             .post('/auth/login')
             .send({ email: 'admin@email.com', password: '123456' });
-      
-            console.log('Login response:', loginResponse.body)
 
           accessToken = loginResponse.body.accessToken;
-            console.log('token JWT:', accessToken)
 
     })
 

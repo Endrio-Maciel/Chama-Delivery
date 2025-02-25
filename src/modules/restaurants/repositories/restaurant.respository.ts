@@ -1,7 +1,9 @@
 import { PrismaService } from "src/shared/prisma/prisma.service";
 import { CreateRestaurantDto } from "../dtos/create-restaurant.dto";
 import { UpdatedRestaurantSchema } from "../dtos/updated-restaurant.dto";
+import { Injectable } from "@nestjs/common";
 
+@Injectable()
 export class RestaurantRepository {
     constructor (
         private readonly prismaService: PrismaService

@@ -13,8 +13,10 @@ export class RestaurantsController {
     @UseGuards(JwtAuthGuard)
     @Post()
     async create(@Request() req, @Body() body: any) {
-        console.log('Usuario autenticado no restaurantController:', req.user)
-        const data: CreateRestaurantDto = createRestaurantSchema.parse(body)
+        const data: CreateRestaurantDto = createRestaurantSchema.parse({
+            ...body,
+            ownerId: req.user.userId
+        })
         return this.restaurantService.create(req.user.userId, data)
     }
 

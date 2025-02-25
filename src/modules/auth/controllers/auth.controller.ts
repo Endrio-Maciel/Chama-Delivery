@@ -11,8 +11,7 @@ export class AuthController {
 
     @Post('login')
     async login(@Body() body: any) {
-        const data = authSchema.parse(body)
-        return this.authService.login(data)
+        return this.authService.login(body)
     }
 
     @UseGuards(JwtAuthGuard)
