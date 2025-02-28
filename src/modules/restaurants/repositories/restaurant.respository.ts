@@ -1,4 +1,4 @@
-import { PrismaService } from "src/shared/prisma/prisma.service";
+import { PrismaService } from "../../../shared/prisma/prisma.service";
 import { CreateRestaurantDto } from "../dtos/create-restaurant.dto";
 import { UpdatedRestaurantSchema } from "../dtos/updated-restaurant.dto";
 import { Injectable } from "@nestjs/common";

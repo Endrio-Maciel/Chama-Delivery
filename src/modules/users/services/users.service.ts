@@ -9,6 +9,12 @@ export class UserService {
     constructor(private readonly usersRepository: UsersRepository) {}
 
     async create(data: CreateUserSchema) {
+        const existingEmail = await this.usersRepository.findByEmail(data.email)
+
+        if (existingEmail) {
+        throw new Error('Esse email já esta em uso.');
+        }
+
         const hashedPassword = await brcrypt.hash(data.password, 10)
         return this.usersRepository.create({ ...data, password: hashedPassword }) 
     }

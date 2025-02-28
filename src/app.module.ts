@@ -5,6 +5,7 @@ import { envSchema } from './shared/env/env';
 import { EnvModule } from './shared/env/env.module';
 import AuthoModule from './modules/auth/auth.module';
 import { RestaurantsModule } from './modules/restaurants/restaurants.module';
+import { ProductsModule } from './modules/product/products.module';
 
 @Module({
   imports: [
@@ -15,7 +16,8 @@ import { RestaurantsModule } from './modules/restaurants/restaurants.module';
     UserModule,
     EnvModule,
     AuthoModule,
-    RestaurantsModule
+    RestaurantsModule,
+    ProductsModule,
   ]
 })
 export class AppModule {}
