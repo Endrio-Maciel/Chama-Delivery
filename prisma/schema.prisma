@@ -17,6 +17,7 @@ model User {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   restaurants Restaurant[]
+  orders      Order[]
 
   @@map("users")
 }
@@ -33,6 +34,7 @@ model Restaurant {
 
   owner    User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   products Product[]
+  orders   Order[]
 }
 
 model Product {
@@ -45,5 +47,42 @@ model Product {
   updatedAt   DateTime @updatedAt @map("updated_at")
 
   restaurantId String
-  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  restaurant   Restaurant  @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  orderItem    OrderItem[]
+}
+
+model Order {
+  id           String      @id @default(uuid())
+  orderNumber  Int         @unique
+  restaurantId String      @map("restaurant_id")
+  userId       String
+  total        Decimal
+  status       OrderStatus @default(PENDING)
+  createdAt    DateTime    @default(now()) @map("created_at")
+  updatedAt    DateTime    @updatedAt @map("updated_at")
+
+  restaurant Restaurant  @relation(fields: [restaurantId], references: [id])
+  user       User        @relation(fields: [userId], references: [id])
+  items      OrderItem[]
+
+  @@unique([orderNumber, restaurantId])
+}
+
+model OrderItem {
+  id        String  @id @default(uuid())
+  orderId   String  @map("order_id")
+  productId String  @map("product_id")
+  quantity  Int
+  price     Decimal
+
+  order    Order   @relation(fields: [orderId], references: [id])
+  products Product @relation(fields: [productId], references: [id])
+}
+
+enum OrderStatus {
+  PENDING
+  IN_PREPARATION
+  READY
+  COMPLETED
+  CANCELED
 }

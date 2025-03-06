@@ -6,6 +6,7 @@ import { EnvModule } from './shared/env/env.module';
 import AuthoModule from './modules/auth/auth.module';
 import { RestaurantsModule } from './modules/restaurants/restaurants.module';
 import { ProductsModule } from './modules/product/products.module';
+import { OrdersModule } from './modules/orders/orders.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { ProductsModule } from './modules/product/products.module';
     AuthoModule,
     RestaurantsModule,
     ProductsModule,
+    OrdersModule,
   ]
 })
 export class AppModule {}
