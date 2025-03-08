@@ -15,10 +15,13 @@ import { EnvModule } from "src/shared/env/env.module";
         EnvModule,
         JwtModule.registerAsync({
            inject: [EnvService],
-           useFactory: (envService: EnvService) => ({
-            secret: envService.get('JWT_SECRET'),
-            signOptions: { expiresIn: '15m' },
-           }),
+           useFactory: (envService: EnvService) => {
+            console.log("🔥 JWT_SECRET carregado:", envService.get('JWT_SECRET'));
+            return {
+              secret: envService.get('JWT_SECRET') || "my-secret-key",
+              signOptions: { expiresIn: '50m' },
+            };
+          },
         }),
     ],
     controllers: [AuthController],
@@ -28,6 +31,6 @@ import { EnvModule } from "src/shared/env/env.module";
         JwtStrategy,
         RefreshStrategy,
     ],
-    exports: [AuthService]
+    exports: [AuthService, JwtModule]
 })
 export default class AuthoModule {}

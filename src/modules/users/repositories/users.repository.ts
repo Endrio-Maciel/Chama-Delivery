@@ -14,6 +14,7 @@ export class UsersRepository {
             email: data.email,
             phone: data.phone,
             password: data.password,
+            role: data.role,
         }
        })
     }

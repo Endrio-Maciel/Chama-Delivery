@@ -16,10 +16,18 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
+  role Role @default(CLIENT)
+
   restaurants Restaurant[]
   orders      Order[]
 
   @@map("users")
+}
+
+enum Role {
+  CLIENT
+  RESTAURANT
+  ADMIN
 }
 
 model Restaurant {

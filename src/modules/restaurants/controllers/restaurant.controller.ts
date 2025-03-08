@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, Patch, Post, Request, UseGuards }
 import { RestaurantService } from "../services/restaurant.service";
 import { JwtAuthGuard } from "src/modules/auth/guards/jwt.guard";
 import { CreateRestaurantDto, createRestaurantSchema } from "../dtos/create-restaurant.dto";
-import { updatedRestaurantSchema } from "../dtos/updated-restaurant.dto";
+import { UpdatedRestaurantSchema, updatedRestaurantSchema } from "../dtos/updated-restaurant.dto";
 
 @Controller('restaurants')
 export class RestaurantsController {
@@ -29,7 +29,7 @@ export class RestaurantsController {
     @UseGuards(JwtAuthGuard)
     @Patch(':id')
     async update(@Param('id') id: string, @Body() body: any) {
-        const data: CreateRestaurantDto = updatedRestaurantSchema.parse(body)
+        const data: UpdatedRestaurantSchema = updatedRestaurantSchema.parse(body)
         return this.restaurantService.update(id, data)
     }
 
