@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { CreateOrderDto } from "../dtos/create-order";
 import { PrismaService } from "src/shared/prisma/prisma.service";
 import { OrderStatus } from "../enums/order-status.enum";
+import { Prisma } from "@prisma/client";
 
 @Injectable()
 export class OrdersRepository {
@@ -61,5 +62,37 @@ export class OrdersRepository {
             where: { id: orderId },
             data: { status },
         })
+    }
+
+    async getOrdersReport (restaurantId: string, startDate?: Date, endDate?: Date) {
+        const filters: Prisma.OrderWhereInput = {
+            restaurantId,
+            createdAt: {
+                gte: startDate,
+                lte: endDate,
+            },
+        }
+    
+        const orders = await this.prismaService.order.findMany({
+            where: filters,
+            include: {
+                items: true,
+            }
+        })
+
+        const totalOrders = orders.length;
+        const totalRevenue = orders.reduce((sum, order) => sum + Number(order.total), 0);
+        const completedOrders = orders.filter(order => order.status === 'COMPLETED').length;
+        const canceledOrders = orders.filter(order => order.status === 'CANCELED').length;
+        const averageTicket = totalOrders > 0 ? totalRevenue / totalOrders : 0;
+
+        return {
+        totalOrders,
+        totalRevenue,
+        completedOrders,
+        canceledOrders,
+        averageTicket,
+        orders, 
+        };
     }
 }

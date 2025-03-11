@@ -3,15 +3,23 @@ import { RestaurantService } from "../services/restaurant.service";
 import { JwtAuthGuard } from "src/modules/auth/guards/jwt.guard";
 import { CreateRestaurantDto, createRestaurantSchema } from "../dtos/create-restaurant.dto";
 import { UpdatedRestaurantSchema, updatedRestaurantSchema } from "../dtos/updated-restaurant.dto";
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { RolesGuard } from "src/modules/auth/guards/roles.guard";
+import { Roles } from "src/modules/auth/guards/roles.decorator";
 
+@ApiTags("Restaurants")
+@ApiBearerAuth()
 @Controller('restaurants')
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class RestaurantsController {
     constructor (
         private readonly restaurantService: RestaurantService
     ) {}
 
-    @UseGuards(JwtAuthGuard)
     @Post()
+    @Roles('restaurant', 'admin')
+    @ApiOperation({ summary: 'Cria um novo restaurante' })
+    @ApiResponse({ status: 201, description: 'Restaurante criado com sucesso.' })
     async create(@Request() req, @Body() body: any) {
         const data: CreateRestaurantDto = createRestaurantSchema.parse({
             ...body,
@@ -20,21 +28,27 @@ export class RestaurantsController {
         return this.restaurantService.create(req.user.userId, data)
     }
 
-    @UseGuards(JwtAuthGuard)
     @Get()
+    @Roles('restaurant', 'admin')
+    @ApiOperation({ summary: 'Busca todos os restaurantes do usuário autenticado' })
+    @ApiResponse({ status: 200, description: 'Lista de restaurantes retornada com sucesso.' })
     async findByOwner(@Request() req) {
         return this.restaurantService.findByOwner(req.user.userId)
     }
 
-    @UseGuards(JwtAuthGuard)
     @Patch(':id')
+    @Roles('restaurant', 'admin')
+    @ApiOperation({ summary: 'Atualiza um restaurante existente' })
+    @ApiResponse({ status: 200, description: 'Restaurante atualizado com sucesso.' })
     async update(@Param('id') id: string, @Body() body: any) {
         const data: UpdatedRestaurantSchema = updatedRestaurantSchema.parse(body)
         return this.restaurantService.update(id, data)
     }
 
-    @UseGuards(JwtAuthGuard)
     @Delete(':id')
+    @Roles('restaurant', 'admin')
+    @ApiOperation({ summary: 'Deleta um restaurante' })
+    @ApiResponse({ status: 204, description: 'Restaurante deletado com sucesso.' })
     async delete(@Param('id') id: string) {
         return this.restaurantService.delete(id)
     }
