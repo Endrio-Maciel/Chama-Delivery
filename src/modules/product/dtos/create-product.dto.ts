@@ -1,10 +1,15 @@
-import { z } from "zod";
+import { ApiProperty } from "@nestjs/swagger";
 
-export const createProductSchema = z.object({
-  name: z.string().min(3, "O nome deve ter pelo menos 3 caracteres"),
-  description: z.string().optional(),
-  price: z.number().positive("O preço deve ser positivo"),
-  imageUrl: z.string().url("URL inválida").optional(),
-});
+export class CreateProductSchema {
+  @ApiProperty({ description: 'Nome do produto' })
+  name: string;
 
-export type CreateProductDto = z.infer<typeof createProductSchema>;
+  @ApiProperty({ description: 'Descrição do produto', required: false })
+  description?: string;
+
+  @ApiProperty({ description: 'Preço do produto', example: 9.99 })
+  price: number;
+
+  @ApiProperty({ description: 'URL da imagem do produto', required: false })
+  imageUrl?: string;
+}

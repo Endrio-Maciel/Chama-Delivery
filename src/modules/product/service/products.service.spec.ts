@@ -32,7 +32,7 @@ describe('ProductsService', () => {
   it('deve criar um produto', async () => {
     const productDto = { name: 'Hamburguer', price: 25.99, description: 'Delicioso', imageUrl: 'http://example.com/img.png' };
     const restaurantId = 'rest123';
-
+  
     jest.spyOn(repository, 'create').mockResolvedValue({
         id: 'prod1',
         name: 'Hamburguer',
@@ -43,12 +43,21 @@ describe('ProductsService', () => {
         createdAt: new Date(),
         updatedAt: new Date(),
       });
-
+  
     const result = await service.create(restaurantId, productDto);
-
-    expect(result).toEqual({ id: 'prod1', ...productDto, restaurantId });
+  
+    expect(result).toEqual({
+      id: 'prod1',
+      name: productDto.name,
+      price: 25.99, 
+      description: productDto.description,
+      imageUrl: productDto.imageUrl,
+      restaurantId
+    });
+  
     expect(repository.create).toHaveBeenCalledWith(restaurantId, productDto);
   });
+  
 
   it('deve retornar um produto pelo ID', async () => {
     const product = { 

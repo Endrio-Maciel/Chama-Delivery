@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { RestaurantRepository } from "../repositories/restaurant.respository";
 import { CreateRestaurantDto } from "../dtos/create-restaurant.dto";
+import { UpdateRestaurantDto } from "../dtos/updated-restaurant.dto";
 
 @Injectable()
 export class RestaurantService {
@@ -16,7 +17,7 @@ export class RestaurantService {
         return this.restaurantsRepository.findByOwner(ownerId);
     }
 
-    async update(id: string, data: CreateRestaurantDto) {
+    async update(id: string, data: UpdateRestaurantDto) {
     const restaurant = await this.restaurantsRepository.update(id, data);
     if (!restaurant) throw new NotFoundException('Restaurante não encontrado');
     return restaurant;

@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { OrdersRepository } from "../repositories/orders.repository";
-import { CreateOrderDto } from "../dtos/create-order";
+import { CreateOrderSchema } from "../dtos/create-order";
 import { OrderStatus } from "../enums/order-status.enum";
 import { OrdersGateway } from "../gateways/orders.gateway";
 import { FilterOrderSchema } from "../dtos/filter-date-order";
@@ -12,7 +12,7 @@ export class OrderService {
      private readonly ordersGateway: OrdersGateway
     ) {}
 
-    async create(userId: string, restaurantId: string, data: CreateOrderDto) {
+    async create(userId: string, restaurantId: string, data: CreateOrderSchema) {
         const order = await this.ordersRepository.create(userId, restaurantId, data)
         
         console.log("Novo pedido criado:", order)

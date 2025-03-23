@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { CreateOrderDto } from "../dtos/create-order";
+import { CreateOrderSchema } from "../dtos/create-order";
 import { PrismaService } from "src/shared/prisma/prisma.service";
 import { OrderStatus } from "../enums/order-status.enum";
 import { Prisma } from "@prisma/client";
@@ -19,7 +19,7 @@ export class OrdersRepository {
         return lastOrder ? lastOrder.orderNumber + 1 : 1;
     }
 
-    async create (userId: string, restaurantId: string, data: CreateOrderDto){
+    async create (userId: string, restaurantId: string, data: CreateOrderSchema){
         const restaurantExists = await this.prismaService.restaurant.findUnique({
             where: {
                 id: restaurantId,

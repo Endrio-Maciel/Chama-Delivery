@@ -1,8 +1,8 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Request, UseGuards } from "@nestjs/common";
 import { RestaurantService } from "../services/restaurant.service";
 import { JwtAuthGuard } from "src/modules/auth/guards/jwt.guard";
-import { CreateRestaurantDto, createRestaurantSchema } from "../dtos/create-restaurant.dto";
-import { UpdatedRestaurantSchema, updatedRestaurantSchema } from "../dtos/updated-restaurant.dto";
+import { CreateRestaurantDto } from "../dtos/create-restaurant.dto";
+import { UpdateRestaurantDto } from "../dtos/updated-restaurant.dto";
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { RolesGuard } from "src/modules/auth/guards/roles.guard";
 import { Roles } from "src/modules/auth/guards/roles.decorator";
@@ -20,12 +20,8 @@ export class RestaurantsController {
     @Roles('restaurant', 'admin')
     @ApiOperation({ summary: 'Cria um novo restaurante' })
     @ApiResponse({ status: 201, description: 'Restaurante criado com sucesso.' })
-    async create(@Request() req, @Body() body: any) {
-        const data: CreateRestaurantDto = createRestaurantSchema.parse({
-            ...body,
-            ownerId: req.user.userId
-        })
-        return this.restaurantService.create(req.user.userId, data)
+    async create(@Request() req, @Body() body: CreateRestaurantDto) {
+        return this.restaurantService.create(req.user.userId, body)
     }
 
     @Get()
@@ -40,9 +36,8 @@ export class RestaurantsController {
     @Roles('restaurant', 'admin')
     @ApiOperation({ summary: 'Atualiza um restaurante existente' })
     @ApiResponse({ status: 200, description: 'Restaurante atualizado com sucesso.' })
-    async update(@Param('id') id: string, @Body() body: any) {
-        const data: UpdatedRestaurantSchema = updatedRestaurantSchema.parse(body)
-        return this.restaurantService.update(id, data)
+    async update(@Param('id') id: string, @Body() body: UpdateRestaurantDto) {
+        return this.restaurantService.update(id, body)
     }
 
     @Delete(':id')

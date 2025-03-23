@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  db-test:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: testuser
+      POSTGRES_PASSWORD: testpassword
+      POSTGRES_DB: testdb
+    ports:
+      - "5433:5432"
+    networks:
+      - test-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U testuser -d testdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app-test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_URL: "postgresql://testuser:testpassword@db-test:5432/testdb?schema=public"
+      JWT_SECRET: "sua_chave_secreta_jwt_aqui"
+      JWT_REFRESH_SECRET: "sua_chave_secreta_refresh_jwt_aqui"
+    depends_on:
+      db-test:
+        condition: service_healthy
+    ports:
+      - "3001:3000"
+    networks:
+      - test-network
+
+networks:
+  test-network:
+    driver: bridge

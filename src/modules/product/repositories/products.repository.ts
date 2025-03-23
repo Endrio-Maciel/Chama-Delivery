@@ -1,13 +1,13 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../../../shared/prisma/prisma.service";
-import { CreateProductDto } from "../dtos/create-product.dto";
-import { UpdateProductDto } from "../dtos/updated-product.dto";
+import { CreateProductSchema } from "../dtos/create-product.dto";
+import { UpdateProductSchema } from "../dtos/updated-product.dto";
 
 @Injectable()
 export class ProductsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(restaurantId: string, data: CreateProductDto) {
+  async create(restaurantId: string, data: CreateProductSchema) {
     return this.prisma.product.create({
       data: { 
         name: data.name,
@@ -27,7 +27,7 @@ export class ProductsRepository {
     return this.prisma.product.findMany({ where: { restaurantId } });
   }
 
-  async update(id: string, data: UpdateProductDto) {
+  async update(id: string, data: UpdateProductSchema) {
     return this.prisma.product.update({
       where: { id },
       data,

@@ -3,6 +3,7 @@ import * as bcrypt from 'bcryptjs'
 import { UsersRepository } from '../repositories/users.repository'
 import { UserService } from './users.service'
 import { NotFoundException } from '@nestjs/common'
+import { Role } from '@prisma/client'
 
 describe('UserService', ()=>{
     let service: UserService
@@ -40,7 +41,13 @@ describe('UserService', ()=>{
     }
        const hashedPassword = await bcrypt.hash(userDto.password, 8)
 
-       jest.spyOn(repository, 'create').mockResolvedValue({...userDto, password: hashedPassword }) 
+       jest.spyOn(repository, 'create').mockResolvedValue({
+        ...userDto,
+        password: hashedPassword,
+        refreshToken: null,
+        role: 'user' as Role
+    })
+    
 
        const result = await service.create(userDto) 
 
@@ -57,6 +64,8 @@ describe('UserService', ()=>{
         password: '123456',
         createdAt: new Date(),
         updatedAt: new Date(),
+        refreshToken: null,
+        role: 'user' as Role,
       }
 
       jest.spyOn(repository, 'findByEmail').mockResolvedValue(user)
@@ -81,7 +90,9 @@ describe('UserService', ()=>{
     const updatedUser = { 
       ...existingUser, 
       name: 'John Doe', 
-      updatedAt: new Date(),  
+      updatedAt: new Date(),
+      refreshToken: null,
+      role: 'user' as Role,  
     };
 
       jest.spyOn(repository, 'updated').mockResolvedValue(updatedUser)

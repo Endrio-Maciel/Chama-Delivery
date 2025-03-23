@@ -1,8 +1,8 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Request, UseGuards } from "@nestjs/common";
 import { JwtAuthGuard } from "src/modules/auth/guards/jwt.guard";
-import { CreateProductDto, createProductSchema } from "../dtos/create-product.dto";
+import { CreateProductSchema,  } from "../dtos/create-product.dto";
 import { ProductsService } from "../service/products.service";
-import { UpdateProductDto, updateProductSchema } from "../dtos/updated-product.dto";
+import { UpdateProductSchema } from "../dtos/updated-product.dto";
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 
 @ApiTags("Products")
@@ -15,9 +15,8 @@ export class ProductsController {
   @Post()
   @ApiOperation({ summary: 'Cria um novo produto para um restaurante' })
   @ApiResponse({ status: 201, description: 'Produto criado com sucesso.' })
-  async create(@Request() req, @Param("restaurantId") restaurantId: string, @Body() body: any) {
-    const data: CreateProductDto = createProductSchema.parse(body);
-    return this.productsService.create(restaurantId, data);
+  async create(@Request() req, @Param("restaurantId") restaurantId: string, @Body() body: CreateProductSchema) {
+    return this.productsService.create(restaurantId, body);
   }
 
   @Get()
@@ -40,9 +39,8 @@ export class ProductsController {
   @ApiOperation({ summary: 'Atualiza um produto existente' })
   @ApiResponse({ status: 200, description: 'Produto atualizado com sucesso.' })
   @UseGuards(JwtAuthGuard)
-  async update(@Param("id") id: string, @Body() body: any) {
-    const data: UpdateProductDto = updateProductSchema.parse(body);
-    return this.productsService.update(id, data);
+  async update(@Param("id") id: string, @Body() body: UpdateProductSchema) {
+    return this.productsService.update(id, body);
   }
 
   @Delete(":id")

@@ -1,14 +1,14 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { UsersRepository } from "../repositories/users.repository";
-import { CreateUserSchema } from "../dtos/create-user.dto";
 import * as brcrypt from 'bcryptjs'
 import { UpdatedUserSchema } from "../dtos/updated-user.dto";
+import { CreateUserDto } from "../dtos/create-user.dto";
 
 @Injectable()
 export class UserService {
     constructor(private readonly usersRepository: UsersRepository) {}
 
-    async create(data: CreateUserSchema) {
+    async create(data: CreateUserDto) {
         const existingEmail = await this.usersRepository.findByEmail(data.email)
 
         if (existingEmail) {

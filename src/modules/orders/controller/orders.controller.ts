@@ -1,11 +1,11 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Request, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Param, Patch, Post, Query, Request, UseGuards } from "@nestjs/common";
 import { JwtAuthGuard } from "src/modules/auth/guards/jwt.guard";
 import { OrderService } from "../services/orders.service";
-import { CreateOrderDto } from "../dtos/create-order";
-import { UpdateOrderStatusDto } from "../dtos/updated-order";
+import { CreateOrderSchema } from "../dtos/create-order";
+import { UpdateOrderStatusSchema } from "../dtos/updated-order";
 import { RolesGuard } from "src/modules/auth/guards/roles.guard";
 import { Roles } from "src/modules/auth/guards/roles.decorator";
-import { filterOrderSchema } from "../dtos/filter-date-order";
+import { FilterOrderSchema } from "../dtos/filter-date-order";
 import { ApiBearerAuth, ApiOperation, ApiQuery, ApiResponse, ApiTags } from "@nestjs/swagger";
 
 @ApiTags('Orders')
@@ -20,7 +20,7 @@ export class OrdersController {
   @ApiOperation({ summary: 'Criar novo pedido' })
   @ApiResponse({ status: 201, description: 'Pedido criado com sucesso.' })
   @ApiResponse({ status: 403, description: 'Acesso negado.' })
-  async create(@Request() req, @Param("restaurantId") restaurantId: string, @Body() body: CreateOrderDto) {
+  async create(@Request() req, @Param("restaurantId") restaurantId: string, @Body() body: CreateOrderSchema) {
     return this.ordersService.create(req.user.userId, restaurantId, body);
   }
 
@@ -45,7 +45,7 @@ export class OrdersController {
   @Roles("restaurant")
   @ApiOperation({ summary: 'Atualizar status de um pedido' })
   @ApiResponse({ status: 200, description: 'Status do pedido atualizado.' })
-  async updatedStatus (@Param("orderId") orderId: string, @Body() body: UpdateOrderStatusDto) {
+  async updatedStatus (@Param("orderId") orderId: string, @Body() body: UpdateOrderStatusSchema) {
     return this.ordersService.updateStatus(orderId, body.status)  
   }
 
@@ -57,14 +57,8 @@ export class OrdersController {
   @ApiResponse({ status: 200, description: 'Relatório gerado com sucesso.' })
   async getOrdersReport (
     @Param("restaurantId") restaurantId: string,
-    @Query() query: any
+    @Query() query: FilterOrderSchema
   ) {
-    const parsedQuery = filterOrderSchema.safeParse(query)
-    
-    if(!parsedQuery.success) {
-      return { error: parsedQuery.error.errors }
-    }
-
-    return this.ordersService.getOrdersReport(restaurantId, parsedQuery.data)
+    return this.ordersService.getOrdersReport(restaurantId, query)
   }
 }

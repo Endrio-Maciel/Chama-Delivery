@@ -1,6 +1,6 @@
 import { PrismaService } from "../../../shared/prisma/prisma.service";
 import { CreateRestaurantDto } from "../dtos/create-restaurant.dto";
-import { UpdatedRestaurantSchema } from "../dtos/updated-restaurant.dto";
+import { UpdateRestaurantDto } from "../dtos/updated-restaurant.dto";
 import { Injectable } from "@nestjs/common";
 
 @Injectable()
@@ -29,7 +29,7 @@ export class RestaurantRepository {
         return this.prismaService.restaurant.findMany({ where: { ownerId }})
     }
 
-    async update(id: string, data: UpdatedRestaurantSchema) {
+    async update(id: string, data: UpdateRestaurantDto) {
         return this.prismaService.restaurant.update({where: {id}, data,})
     }
 

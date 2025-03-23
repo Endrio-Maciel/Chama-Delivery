@@ -1,19 +1,21 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards, UsePipes } from "@nestjs/common";
 import { UserService } from "../services/users.service";
-import { CreateUserSchema } from "../dtos/create-user.dto";
+import { CreateUserDto } from "../dtos/create-user.dto";
 import { UpdatedUserSchema } from "../dtos/updated-user.dto";
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { JwtAuthGuard } from "src/modules/auth/guards/jwt.guard";
+import { ZodValidationPipe } from "nestjs-zod";
 
 @ApiTags("Users")
+@UsePipes(ZodValidationPipe)
 @Controller('users')
 export class UsersController {
     constructor(private readonly usersService: UserService) {}
 
     @Post()
     @ApiOperation({ summary: 'Cria um novo usuário' })
-     @ApiResponse({ status: 201, description: 'Usuário criado com sucesso.' })
-    async create(@Body() data: CreateUserSchema) {
+    @ApiResponse({ status: 201, description: 'Usuário criado com sucesso.' })
+    async create(@Body() data: CreateUserDto) {
         return this.usersService.create(data)
     }
 

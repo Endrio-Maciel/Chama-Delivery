@@ -1,8 +1,15 @@
-import { z } from 'zod'
+import { ApiProperty } from '@nestjs/swagger'
+import { IsEmail, isEmail, IsNotEmpty, IsString } from 'class-validator'
 
-export const authSchema = z.object({
-    email: z.string().email('E-mail inválido'),
-    password: z.string().min(6, 'A senha deve ter pelo menos 6 caracteres'),
-})
+export class AuthDto {
 
-export type AuthDto = z.infer<typeof authSchema>
+    @ApiProperty({ description: 'Email do usuário', example: "john@email.com" })
+    @IsString()
+    @IsNotEmpty()
+    @IsEmail({}, {message: "Credenciais inválidas."})
+    email: string
+
+    @IsString()
+    @ApiProperty({ description: 'Senha do usuário', example: "senha123"})
+    password: string
+}

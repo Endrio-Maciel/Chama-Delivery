@@ -7,6 +7,8 @@ import AuthoModule from './modules/auth/auth.module';
 import { RestaurantsModule } from './modules/restaurants/restaurants.module';
 import { ProductsModule } from './modules/product/products.module';
 import { OrdersModule } from './modules/orders/orders.module';
+import { APP_PIPE } from '@nestjs/core';
+import { ZodValidationPipe } from 'nestjs-zod';
 
 @Module({
   imports: [
@@ -20,6 +22,10 @@ import { OrdersModule } from './modules/orders/orders.module';
     RestaurantsModule,
     ProductsModule,
     OrdersModule,
-  ]
+  ],
+  providers: [{
+    provide: APP_PIPE,
+    useClass: ZodValidationPipe,
+  }],
 })
 export class AppModule {}

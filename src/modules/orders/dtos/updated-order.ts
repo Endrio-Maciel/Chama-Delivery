@@ -1,8 +1,7 @@
-import { z } from "zod";
-import { OrderStatus } from "../enums/order-status.enum"; 
+import { ApiProperty } from '@nestjs/swagger';
+import { OrderStatus } from '../enums/order-status.enum';
 
-export const updateOrderStatusSchema = z.object({
-  status: z.nativeEnum(OrderStatus),
-});
-
-export type UpdateOrderStatusDto = z.infer<typeof updateOrderStatusSchema>;
+export class UpdateOrderStatusSchema {
+  @ApiProperty({ description: 'Novo status do pedido', enum: OrderStatus })
+  status: OrderStatus;
+}

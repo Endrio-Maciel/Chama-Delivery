@@ -38,8 +38,21 @@ describe('RestaurantService', ()=>{
         
         jest.spyOn(repository, 'create').mockResolvedValue(mockRestaurant)
 
-        const result = await service.create('user-id-mockado', {name: 'Chama Burger'})
+        const result = await service.create('user-id-mockado', {
+            name: 'Chama Burger',
+            restaurantPhone: '51 999999999',
+            address: 'rua do hamburguer, 71',
+            ownerId: 'user-id-mockado',
+            description: 'O melhor hambúrguer da cidade',
+        })
         expect(result).toEqual(mockRestaurant)
-        expect(repository.create).toHaveBeenCalledWith('user-id-mockado', {name: 'Chama Burger'})
+        expect(repository.create).toHaveBeenCalledWith('user-id-mockado', {
+          name: 'Chama Burger',
+          restaurantPhone: '51 999999999',
+          address: 'rua do hamburguer, 71',
+          ownerId: 'user-id-mockado',
+          description: 'O melhor hambúrguer da cidade',
+      })
+      
     })
 })

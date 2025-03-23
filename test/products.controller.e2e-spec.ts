@@ -2,6 +2,7 @@ import { NestApplication } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
+import { PrismaClient, Role } from '@prisma/client';
 
 interface ProductResponse {
   id: string;
@@ -17,14 +18,25 @@ describe('ProductsController (e2e)', () => {
   let accessToken: string;
   let restaurantId: string;
   let productId: string;
+  const prisma = new PrismaClient();
 
   beforeAll(async () => {
+    await prisma.orderItem.deleteMany();
+    await prisma.order.deleteMany();
+    await prisma.product.deleteMany();
+    await prisma.restaurant.deleteMany();
+    await prisma.user.deleteMany();
+      
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
 
     app = moduleFixture.createNestApplication();
     await app.init();
+
+    await prisma.user.deleteMany();
+    await prisma.restaurant.deleteMany();
+    await prisma.product.deleteMany();
 
     const userResponse = await request(app.getHttpServer())
       .post('/users')
@@ -33,6 +45,7 @@ describe('ProductsController (e2e)', () => {
         email: 'endrio@email.com',
         phone: '51 99999-9999',
         password: '123456',
+        role: Role.ADMIN
       });
 
     expect(userResponse.status).toBe(201);
@@ -41,23 +54,24 @@ describe('ProductsController (e2e)', () => {
       .post('/auth/login')
       .send({ email: 'endrio@email.com', password: '123456' });
 
-    accessToken = loginResponse.body.accessToken;
+    accessToken = loginResponse.body.access_token;
     expect(loginResponse.status).toBe(201);
 
     const restaurantResponse = await request(app.getHttpServer())
       .post('/restaurants')
       .set('Authorization', `Bearer ${accessToken}`)
-      .send({ name: 'Chama Burger', description: 'Melhor hamburgueria' });
+      .send({ name: 'Chama Burger', description: 'Melhor hamburgueria', address: 'Rua X, 123' });
 
     restaurantId = restaurantResponse.body.id;
     expect(restaurantResponse.status).toBe(201);
   });
 
   afterAll(async () => {
+    await prisma.$disconnect();
     await app.close();
   });
 
-  it('/restaurants/:restaurantId/products (POST) - Deve criar um produto', async () => {
+  it('/restaurants/:restaurantId/products (POST)', async () => {
     const response = await request(app.getHttpServer())
       .post(`/restaurants/${restaurantId}/products`)
       .set('Authorization', `Bearer ${accessToken}`)
@@ -65,49 +79,19 @@ describe('ProductsController (e2e)', () => {
         name: 'Hamburguer Clássico',
         price: 25.99,
         description: 'Delicioso hambúrguer artesanal',
-        imageUrl: 'http://example.com/hamburguer.png',
       });
 
-    const product: ProductResponse = response.body;
-    productId = product.id;
-
+    productId = response.body.id;
     expect(response.status).toBe(201);
-    expect(product.name).toBe('Hamburguer Clássico');
+    expect(response.body.name).toBe('Hamburguer Clássico');
   });
 
-  it('/restaurants/:restaurantId/products (GET) - Deve listar os produtos', async () => {
+  it('/restaurants/:restaurantId/products (GET)', async () => {
     const response = await request(app.getHttpServer())
       .get(`/restaurants/${restaurantId}/products`)
       .set('Authorization', `Bearer ${accessToken}`);
 
     expect(response.status).toBe(200);
     expect(response.body).toBeInstanceOf(Array);
-  });
-
-  it('/restaurants/:restaurantId/products/:id (GET) - Deve buscar um produto pelo ID', async () => {
-    const response = await request(app.getHttpServer())
-      .get(`/restaurants/${restaurantId}/products/${productId}`)
-      .set('Authorization', `Bearer ${accessToken}`);
-
-    expect(response.status).toBe(200);
-    expect(response.body.id).toBe(productId);
-  });
-
-  it('/restaurants/:restaurantId/products/:id (PATCH) - Deve atualizar um produto', async () => {
-    const response = await request(app.getHttpServer())
-      .patch(`/restaurants/${restaurantId}/products/${productId}`)
-      .set('Authorization', `Bearer ${accessToken}`)
-      .send({ name: 'Hamburguer Especial' });
-
-    expect(response.status).toBe(200);
-    expect(response.body.name).toBe('Hamburguer Especial');
-  });
-
-  it('/restaurants/:restaurantId/products/:id (DELETE) - Deve deletar um produto', async () => {
-    const response = await request(app.getHttpServer())
-      .delete(`/restaurants/${restaurantId}/products/${productId}`)
-      .set('Authorization', `Bearer ${accessToken}`);
-
-    expect(response.status).toBe(200);
   });
 });

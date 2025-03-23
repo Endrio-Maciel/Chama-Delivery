@@ -19,7 +19,7 @@ import { EnvModule } from "src/shared/env/env.module";
             console.log("🔥 JWT_SECRET carregado:", envService.get('JWT_SECRET'));
             return {
               secret: envService.get('JWT_SECRET') || "my-secret-key",
-              signOptions: { expiresIn: '50m' },
+              signOptions: { expiresIn: '15m' },
             };
           },
         }),

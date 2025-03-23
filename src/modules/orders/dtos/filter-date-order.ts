@@ -1,8 +1,9 @@
-import { z } from "zod";
+import { ApiProperty } from "@nestjs/swagger";
 
-export const filterOrderSchema = z.object({
-  startDate: z.string().optional(),
-  endDate: z.string().optional(),
-});
+export class FilterOrderSchema {
+  @ApiProperty({ description: 'Data de início para o filtro', required: false })
+  startDate?: string;
 
-export type FilterOrderSchema = z.infer<typeof filterOrderSchema>;
+  @ApiProperty({ description: 'Data de término para o filtro', required: false })
+  endDate?: string;
+}

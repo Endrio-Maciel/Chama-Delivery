@@ -1,6 +1,3 @@
-import { z } from "zod";
-import { createProductSchema } from "./create-product.dto";
+import { CreateProductSchema } from "./create-product.dto";
 
-export const updateProductSchema = createProductSchema.partial();
-
-export type UpdateProductDto = z.infer<typeof updateProductSchema>;
+export class UpdateProductSchema  implements Partial<CreateProductSchema> {}
